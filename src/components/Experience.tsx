@@ -5,7 +5,7 @@ const experiences = [
   {
     year: "2025 - Present",
     duration: "Current",
-    company: "Independent / Resuvo",
+    company: "Independent / Resumetop",
     role: "Software Engineer",
     technologies: "React · Astro · Go · PostgreSQL"
   },
