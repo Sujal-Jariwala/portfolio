@@ -5,19 +5,24 @@ import type { Articles } from './Articles';
 
 const carouselItems: Articles[] = [
   {
+    title: "Circumstances Don't Define a Man. His Choices Do.",
+    desc: "We are often quick to attribute character to circumstances. But if circumstances alone defined a person, wouldn't everyone raised in similar environments turn out the same?",
+    link: "/blog/circumstances-dont-define-a-man"
+  },
+  {
     title: "Engineering a zero-trust document upload pipeline",
     desc: "Implementing ClamAV and Content Disarm to ensure secure document handling.",
-    link: "https://medium.com/@jariwalasujal668/engineering-a-zero-trust-document-upload-pipeline-implementing-clamav-and-content-disarm-a8ceddc4c814?sharedUserId=jariwalasujal668"
+    link: "/blog/zero-trust-upload-pipeline"
   },
   {
     title: "Building a resume builder with Astro",
     desc: "Why I chose SSG for marketing/SEO and CSR for the editor.",
-    link: "https://medium.com/@jariwalasujal668/building-a-resume-builder-with-astro-why-i-chose-ssg-for-marketing-seo-and-csr-for-the-editor-081f865cd1d8?sharedUserId=jariwalasujal668"
+    link: "/blog/ssgoverssr"
   },
   {
     title: "The Cache I Didn’t Build: Client State in a Resume Builder",
     desc: "A decision record on browser storage, multi-tab sync, and why the right amount of machinery turned out to be very little.",
-    link: "https://medium.com/@jariwalasujal668/the-cache-i-didnt-build-client-state-in-a-resume-builder-a302fc8a9f17"
+    link: "/blog/the-cache-i-didnt-build"
   }
 ];
 
@@ -106,8 +111,8 @@ export const Hero = () => {
                 <p className="text-gray-light text-sm md:text-base leading-relaxed">{item.desc}</p>
               </div>
               <div className="flex gap-3 mt-10">
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="bg-white text-bg-inner text-sm px-6 py-2 rounded-full font-medium hover:bg-gray-200 hover:scale-105 transition-all duration-300">Read article</a>
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-transparent border border-white text-white flex items-center justify-center rounded-full hover:bg-white hover:text-bg-inner hover:scale-110 transition-all duration-300"><ArrowRight size={16} /></a>
+                <a href={item.link} className="bg-white text-bg-inner text-sm px-6 py-2 rounded-full font-medium hover:bg-gray-200 hover:scale-105 transition-all duration-300">Read article</a>
+                <a href={item.link} className="w-9 h-9 bg-transparent border border-white text-white flex items-center justify-center rounded-full hover:bg-white hover:text-bg-inner hover:scale-110 transition-all duration-300"><ArrowRight size={16} /></a>
               </div>
             </div>
           ))}

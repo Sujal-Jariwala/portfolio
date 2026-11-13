@@ -1,0 +1,388 @@
+---
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import { Navbar } from "../../components/Navbar";
+import { Footer } from "../../components/Footer";
+import { DecorativeCircle } from "../../components/DecorativeCircle";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Calendar,
+  Clock,
+} from "lucide-react";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Fetch other posts for recommendations at the bottom
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const otherPosts = allPosts
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+const formattedDate = post.data.pubDate.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout title={`${post.data.title} | Sujal Jariwala`}>
+  <main class="min-h-screen relative overflow-hidden bg-bg-outer text-gray-light">
+    {/* Global background circles */}
+    <div
+      class="absolute -top-125 -right-125 w-300 h-300 border border-circle rounded-full pointer-events-none z-0"
+    >
+    </div>
+    <div
+      class="absolute top-[25%] -left-150 w-250 h-250 border border-circle rounded-full pointer-events-none z-0"
+    >
+    </div>
+
+    {/* Outer Breadcrumb Section */}
+    <div class="max-w-7xl mx-auto px-6 py-12 md:py-16 relative z-10">
+      <div
+        class="flex flex-col md:flex-row justify-between items-start text-sm text-gray-light gap-4"
+      >
+        <div>
+          <a
+            href="/blog"
+            class="font-display tracking-wider hover:text-white transition-colors flex items-center gap-2 group"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            <span>... /Home / Blog / {post.id} ...</span>
+          </a>
+        </div>
+        <div class="text-xs md:text-sm font-display text-gray-light flex items-center gap-3">
+          <span>{post.data.category}</span>
+          <span class="text-gray-medium">•</span>
+          <span>{post.data.readTime}</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Main Portfolio Container */}
+    <div class="max-w-300 mx-auto px-4 md:px-6 mb-32 relative z-10">
+      <div
+        class="bg-bg-inner border border-border-subtle rounded-4xl overflow-hidden shadow-2xl relative"
+      >
+        <DecorativeCircle size="800px" top="-400px" right="-200px" />
+        <DecorativeCircle size="600px" bottom="15%" left="-300px" />
+        <DecorativeCircle size="1000px" top="40%" right="-500px" />
+
+        <Navbar client:load />
+
+        {/* Article Container */}
+        <article class="relative z-10 px-6 md:px-16 lg:px-24 py-16 md:py-24 max-w-4xl mx-auto">
+          {/* Back Button */}
+          <div class="mb-10">
+            <a
+              href="/blog"
+              class="inline-flex items-center gap-2.5 text-xs md:text-sm font-display text-gray-light hover:text-white border border-border-subtle hover:border-white rounded-full px-4 py-2 transition-all duration-300 group bg-bg-outer/30"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+              <span>Back to all articles</span>
+            </a>
+          </div>
+
+          {/* Article Header */}
+          <header class="mb-14 pb-12 border-b border-border-subtle">
+            {/* Category & Read Time */}
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+              <span class="border border-border-subtle rounded-full px-3.5 py-1 text-xs text-white font-display bg-white/5 uppercase tracking-wider">
+                {post.data.category}
+              </span>
+              <span class="text-gray-medium">•</span>
+              <span class="flex items-center gap-1.5 text-xs font-display text-gray-light">
+                <Clock size={13} />
+                {post.data.readTime}
+              </span>
+              <span class="text-gray-medium">•</span>
+              <span class="flex items-center gap-1.5 text-xs font-display text-gray-light">
+                <Calendar size={13} />
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {formattedDate}
+                </time>
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 class="text-3xl md:text-5xl lg:text-5xl font-display text-white leading-[1.2] tracking-tight mb-8">
+              {post.data.title}
+            </h1>
+
+            {/* Description / Lead */}
+            <p class="text-lg md:text-xl text-gray-light italic leading-relaxed border-l-2 border-white/20 pl-4 mb-8">
+              {post.data.description}
+            </p>
+
+            {/* Author bar & Medium cross-post link */}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-border-subtle/50 text-xs font-display">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white/10 border border-border-subtle flex items-center justify-center text-white font-display font-medium text-xs">
+                  SJ
+                </div>
+                <div>
+                  <p class="text-white font-medium">Sujal Jariwala</p>
+                  <p class="text-gray-medium text-[11px]">Software Engineer</p>
+                </div>
+              </div>
+
+              {post.data.mediumUrl && (
+                <div>
+                  <a
+                    href={post.data.mediumUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 underline underline-offset-4 transition-colors"
+                  >
+                    <span>Originally on Medium</span>
+                    <ArrowUpRight size={13} />
+                  </a>
+                </div>
+              )}
+            </div>
+          </header>
+
+          {/* Hero Image */}
+          {post.data.heroImage && (
+            <div class="mb-14 overflow-hidden rounded-3xl border border-border-subtle shadow-2xl bg-bg-outer/60">
+              <Image
+                src={post.data.heroImage}
+                alt={post.data.title}
+                width={1200}
+                height={630}
+                class="w-full h-auto object-cover max-h-[500px]"
+              />
+            </div>
+          )}
+
+          {/* Markdown Content Body */}
+          <div class="post-markdown-content leading-relaxed">
+            <Content />
+          </div>
+
+          {/* Post Footer & Author Bio */}
+          <div class="mt-20 pt-12 border-t border-border-subtle">
+            <div class="bg-gray-medium/10 border border-border-subtle rounded-3xl p-8 mb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div>
+                <p class="font-display text-white text-base font-medium mb-1">
+                  Written by Sujal Jariwala
+                </p>
+                <p class="text-gray-light text-sm italic">
+                  Software engineer building clean interfaces, reliable backends, and products like Resumetop.
+                </p>
+              </div>
+              <div class="flex items-center gap-3 shrink-0">
+                <a
+                  href="/#contact"
+                  class="bg-white text-bg-inner font-medium text-xs px-5 py-2 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300"
+                >
+                  Get in touch
+                </a>
+                <a
+                  href="/blog"
+                  class="border border-border-subtle text-white text-xs px-4 py-2 rounded-full hover:border-white transition-colors"
+                >
+                  All articles
+                </a>
+              </div>
+            </div>
+
+            {/* Read More Section */}
+            {otherPosts.length > 0 && (
+              <div>
+                <div class="flex items-center justify-between mb-8">
+                  <h3 class="font-display text-xl md:text-2xl text-white">
+                    More from the blog
+                  </h3>
+                  <a
+                    href="/blog"
+                    class="text-xs font-display text-gray-light hover:text-white flex items-center gap-1 transition-colors"
+                  >
+                    <span>View all</span>
+                    <ArrowRight size={12} />
+                  </a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {otherPosts.map((other) => (
+                    <a
+                      href={`/blog/${other.id}`}
+                      class="border border-border-subtle rounded-3xl p-6 hover:border-white transition-all duration-300 group flex flex-col justify-between bg-bg-inner/40 cursor-pointer block text-inherit no-underline"
+                    >
+                      <div>
+                        <div class="flex items-center gap-2 mb-3 text-[11px] font-display text-gray-medium">
+                          <span class="text-white">{other.data.category}</span>
+                          <span>•</span>
+                          <span>{other.data.readTime}</span>
+                        </div>
+                        <h4 class="font-display text-white text-lg mb-2 leading-snug group-hover:text-blue-400 transition-colors">
+                          {other.data.title}
+                        </h4>
+                        <p class="text-gray-light text-xs italic line-clamp-2">
+                          {other.data.description}
+                        </p>
+                      </div>
+
+                      <div class="mt-6 pt-4 border-t border-border-subtle/40 flex items-center justify-between text-xs font-display text-white">
+                        <span>Read article</span>
+                        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </article>
+
+        <Footer />
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  /* Markdown Content Styling for Blog Posts */
+  .post-markdown-content {
+    font-family: var(--font-body);
+    color: var(--color-gray-light);
+    font-size: 1.1rem;
+    line-height: 1.85;
+  }
+
+  .post-markdown-content > * + * {
+    margin-top: 1.75rem;
+  }
+
+  .post-markdown-content h1,
+  .post-markdown-content h2,
+  .post-markdown-content h3,
+  .post-markdown-content h4 {
+    font-family: var(--font-display);
+    color: var(--color-white);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .post-markdown-content h2 {
+    font-size: 1.85rem;
+    font-weight: 600;
+    margin-top: 3.5rem;
+    margin-bottom: 1.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .post-markdown-content h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-markdown-content p {
+    color: #c0c0c0;
+    line-height: 1.85;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-markdown-content strong {
+    color: var(--color-white);
+    font-weight: 600;
+  }
+
+  .post-markdown-content a {
+    color: #60a5fa;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: rgba(96, 165, 250, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .post-markdown-content a:hover {
+    color: #93c5fd;
+    text-decoration-color: #93c5fd;
+  }
+
+  .post-markdown-content ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.75rem;
+    color: #c0c0c0;
+  }
+
+  .post-markdown-content ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.75rem;
+    color: #c0c0c0;
+  }
+
+  .post-markdown-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.75;
+  }
+
+  .post-markdown-content li::marker {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .post-markdown-content blockquote {
+    border-left: 3px solid rgba(255, 255, 255, 0.35);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0 1rem 1rem 0;
+    font-style: italic;
+    color: #e2e8f0;
+  }
+
+  .post-markdown-content code:not(pre code) {
+    font-family: var(--font-display);
+    font-size: 0.875em;
+    padding: 0.2em 0.45em;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .post-markdown-content pre {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    background-color: #0b0b0b !important;
+    border: 1px solid var(--color-border-subtle);
+    overflow-x: auto;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .post-markdown-content pre code {
+    background: transparent;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  .post-markdown-content hr {
+    border: none;
+    border-top: 1px solid var(--color-border-subtle);
+    margin: 3.5rem 0;
+  }
+</style>

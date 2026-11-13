@@ -5,16 +5,17 @@ export const Navbar = () => {
 
   return (
     <nav className="relative flex justify-between items-center py-8 px-6 md:px-12 border-b border-border-subtle z-50">
-      <div className="font-display text-white text-sm leading-tight tracking-wider uppercase">
+      <a href="/" className="font-display text-white text-sm leading-tight tracking-wider uppercase hover:opacity-80 transition-opacity">
         <span className="block">Jariwala Sujal</span>
-      </div>
+      </a>
             
       {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-12 text-sm">
-        <a href="#about" className="hover:text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">About</a>
-        <a href="#projects" className="hover:text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">Projects</a>
-        <a href="#articles" className="hover:text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">Articles</a>
-        <a href="#contact" className="hover:text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">Contact</a>
+      <div className="hidden md:flex space-x-10 text-sm">
+        <a href="/#about" className="text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">About</a>
+        <a href="/#projects" className="text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">Projects</a>
+        {/* <a href="/#articles" className="text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">Articles</a> */}
+        <a href="/blog" className="text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block  font-medium">Blog</a>
+        <a href="/#contact" className="text-white hover:-translate-y-0.5 hover:drop-shadow-md transition-all duration-300 inline-block">Contact</a>
       </div>
 
       {/* Mobile Hamburger Button */}
@@ -29,12 +30,13 @@ export const Navbar = () => {
       </button>
 
       {/* Mobile Menu */}
-      <div className={`absolute top-full left-0 w-full bg-bg-outer md:hidden transition-all duration-300 overflow-hidden z-40 ${isMenuOpen ? 'max-h-64 border-b border-border-subtle' : 'max-h-0'}`}>
+      <div className={`absolute top-full left-0 w-full bg-bg-outer md:hidden transition-all duration-300 overflow-hidden z-40 ${isMenuOpen ? 'max-h-80 border-b border-border-subtle' : 'max-h-0'}`}>
         <div className="flex flex-col items-center space-y-6 text-sm py-6">
-          <a href="#about" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors duration-300">About</a>
-          <a href="#projects" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors duration-300">Projects</a>
-          <a href="#articles" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors duration-300">Articles</a>
-          <a href="#contact" onClick={() => setIsMenuOpen(false)} className="hover:text-white transition-colors duration-300">Contact</a>
+          <a href="/#about" onClick={() => setIsMenuOpen(false)} className=" text-white transition-colors duration-300">About</a>
+          <a href="/#projects" onClick={() => setIsMenuOpen(false)} className=" text-white transition-colors duration-300">Projects</a>
+          {/* <a href="/#articles" onClick={() => setIsMenuOpen(false)} className=" text-white transition-colors duration-300">Articles</a> */}
+          <a href="/blog" onClick={() => setIsMenuOpen(false)} className=" transition-colors duration-300 text-white font-medium">Blog</a>
+          <a href="/#contact" onClick={() => setIsMenuOpen(false)} className=" text-white transition-colors duration-300">Contact</a>
         </div>
       </div>
     </nav>

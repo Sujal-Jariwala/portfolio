@@ -1,0 +1,120 @@
+---
+title: "Building a Resume Builder with Astro: Why I Chose SSG for Marketing/SEO and CSR for the Editor"
+description: "How I used Astro’s static-first approach for fast, SEO-friendly marketing pages while keeping the resume editor fully client-side for a highly interactive experience."
+pubDate: 2026-06-02
+category: "Frontend Architecture"
+readTime: "4 min read"
+draft: false
+heroImage: "../../assets/blog_assets/hybrid_architecture.svg"
+mediumUrl: "https://medium.com/@jariwalasujal668/building-a-resume-builder-with-astro-why-i-chose-ssg-for-marketing-seo-and-csr-for-the-editor-081f865cd1d8?sharedUserId=jariwalasujal668"
+---
+
+How I used Astro’s static-first approach for fast, SEO-friendly marketing pages while keeping the resume editor fully client-side for a highly interactive experience.
+
+---
+
+## The Beginning
+
+While architecting the frontend for my Resume Builder, one of the earliest decisions I had to make was choosing an appropriate rendering strategy.
+
+Modern web applications can be rendered in several ways, including Client-Side Rendering (CSR), Server-Side Rendering (SSR), and Static Site Generation (SSG). Each approach comes with different trade-offs in terms of performance, SEO, infrastructure requirements, and developer experience.
+
+Since I was already familiar with React, I initially explored frameworks within the React ecosystem. The first framework that naturally came to mind was Next.js.
+
+At first glance, Next.js appeared to be an ideal solution. It supports SSR, SSG, CSR, API routes, and hybrid rendering patterns within a single framework. For many applications, this flexibility is a significant advantage.
+
+However, before committing to a framework, I analyzed the requirements of the application itself.
+
+---
+
+## The First Question: What Should I Use For The Editor?
+
+The resume editor was client-heavy.
+
+It had interactive forms, global state management, dynamic section re-ordering, section editing, live preview updates, and a lot of user-driven interactions.
+
+At this point, it became pretty clear that the editor should be rendered on the client.
+
+I did think about SSR and SSG, but neither really added any value here. The editor isn’t content that needs to be indexed by search engines, nor is it content that can be generated ahead of time.
+
+Everything depends on the user’s actions.
+
+The answer for the editor was CSR.
+
+---
+
+## The Second Question: What About The Marketing Side?
+
+That solved the editor, but it still left the marketing side of the website unanswered.
+
+The landing page, pricing page, feature pages, and blog had a completely different set of requirements.
+
+These pages were mostly static and content-driven. They needed good SEO, fast page loads, minimal JavaScript, and strong caching.
+
+My first thought was simple:
+
+Why not just build everything in React?
+
+I could have done that, but then I’d be shipping JavaScript and hydrating pages that were largely static.
+
+A React SPA typically sends a minimal HTML document and relies on JavaScript before the page becomes fully interactive.
+
+For an editor, that's completely fine.
+
+For a landing page, pricing page, or blog post, it felt unnecessary.
+
+Most of this content changes infrequently and can be generated ahead of time.
+
+At the same time, not every marketing page is completely static. There are still components such as navigation menus, pricing toggles, forms, and other small interactive elements that benefit from JavaScript.
+
+This led me to another question:
+
+**Do I really need to hydrate the entire page just because a few components are interactive?**
+
+The answer was no.
+
+What I wanted was an architecture where the page could remain mostly static, while only the interactive parts received JavaScript.
+
+This is where the concept of Islands Architecture caught my attention.
+
+Instead of treating the entire page as a single application that needs hydration, Islands Architecture allows individual interactive components to be hydrated independently. The rest of the page remains static HTML.
+
+That approach felt like a perfect fit for the marketing side of my application.
+
+The more I researched it, the more I realized that Astro had built its entire philosophy around this idea. Astro’s static-first approach combined with first-class support for Islands Architecture meant I could generate pages ahead of time using SSG while only shipping JavaScript to the components that actually needed it.
+
+That was ultimately one of the biggest reasons I chose Astro for the project.
+
+---
+
+## The Final Decision
+
+By this point, the decision had almost made itself.
+
+The editor and the marketing website had fundamentally different requirements.
+
+The editor was highly interactive, heavily state-driven, and centered around user input. It naturally fit a Client-Side Rendering model.
+
+The marketing pages were largely static, SEO-sensitive, and performance-focused. They benefited far more from being generated ahead of time.
+
+What I was really looking for wasn’t a framework that pushed me toward a single rendering strategy, but one that allowed each part of the application to be rendered in the way that made the most sense.
+
+Astro ended up being that framework.
+
+It allowed me to keep the resume editor as a React-powered client application while treating the marketing side as a collection of static pages optimized for performance and SEO.
+
+More importantly, it aligned with a principle that became increasingly clear throughout the project:
+
+**different parts of an application often have different rendering requirements, and forcing a single strategy everywhere is rarely the optimal solution.**
+
+In the end, choosing Astro wasn’t really about choosing a framework.
+
+It was about choosing an architecture that let me use the right tool and rendering strategy for each part of the product.
+
+Thanks for reading :)
+
+I hope this article helped explain not just why I chose Astro, but more importantly how I approached the architectural decision in the first place.
+
+At the end of the day, choosing a framework is often less important than understanding the requirements of your application.
+
+See you in the next one.

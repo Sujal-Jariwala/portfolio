@@ -1,0 +1,140 @@
+---
+title: "The Cache I Didn’t Build: Client State in a Resume Builder"
+description: "A decision record on browser storage, multi-tab sync, and why the right amount of machinery turned out to be very little."
+pubDate: 2026-10-04
+category: "Frontend Architecture"
+readTime: "6 min read"
+draft: false
+heroImage: "../../assets/blog_assets/client_state_cache.svg"
+mediumUrl: "https://medium.com/@jariwalasujal668/the-cache-i-didnt-build-client-state-in-a-resume-builder-a302fc8a9f17"
+---
+
+A decision record on browser storage, multi-tab sync, and why the right amount of machinery turned out to be very little.
+
+---
+
+## TL;DR
+
+* **Goal:** Stop refetching the whole resume on every page reload.
+* **Rejected:** `localStorage`. Its lifetime and exposure don’t match an authenticated app.
+* **Designed:** A per-tab `sessionStorage` cache, `BroadcastChannel` hints between tabs, and a revision counter per section.
+* **Dropped:** All of it. The fetch it would save is about 4 to 10 KB, and the upkeep is permanent.
+* **Shipped:** Drafts in local component state, saved data in Jotai, one place that handles an expired session, an unsaved-changes warning, and strict server-side checks.
+
+---
+
+## Context
+
+I’m building a resume builder on my own. The frontend is Astro, React with Jotai, the backend is Go with PostgreSQL, Redis, and authentication is a server-side session valid for 7 days. Each resume is one row, with a JSONB column per section. The editor saves one section at a time when the user clicks Save.
+
+That last detail matters. Saves are manual, so there is no autosave, no debounce, and a clear moment at which data becomes durable.
+
+---
+
+## The original goal
+
+The whole exercise started with something small. Every reload of the editor fetched the full resume again, even when nothing had changed. I wanted the app to remember the data across reloads and go back to the server only when it needed to.
+
+Once you decide to keep a copy of server data in the browser, you have taken on a cache. A cache has to answer where it lives, how long it lives, who can read it, and how it learns that it is stale. I started with the first one.
+
+---
+
+## Why not localStorage
+
+`localStorage` is the default answer, and I rejected it deliberately.
+
+The failure scenario is simple. A user logs in, edits, and saves, so the resume lands in `localStorage`. They close the tab. A day later they return, and before any session check has happened, their resume is already on the homepage. The browser is holding their name, phone number, email and work history with no expiry, outside anything the server controls.
+
+* **`localStorage`:** lasts until it is cleared and is shared by every tab of the origin. The problem is that it outlives the login that protects the data.
+* **`sessionStorage`:** lasts until the tab closes (mostly) and belongs to a single tab. The tradeoffs are that it isn’t shared between tabs and that browsers can restore it in some cases.
+* **In-memory only:** lasts until the page reloads. The problem is that every reload refetches the resume.
+
+The core issue is a lifetime mismatch. The server session ends in at most 7 days, and the server can end it sooner. `localStorage` doesn’t end at all. On a shared machine, “I closed the tab” is what users think deletes their data.
+
+`sessionStorage` fits better because its lifetime is the tab’s. Two caveats keep this honest. It does not defend against XSS, since any script on the page can read it. And browsers can restore it after a crash, a session restore, or reopening a closed tab. It narrows the exposure window. It does not replace a strict CSP or an HttpOnly session cookie.
+
+---
+
+## The design I converged on
+
+* **Jotai** for the application’s saved resume state.
+* **`sessionStorage`** as a per-tab cache of the last saved data.
+* **PostgreSQL** as the source of truth.
+* **`BroadcastChannel`** for cross-tab hints: a save in one tab tells the others to refetch that section.
+* **A revision counter per section**, so a reload can ask whether anything changed and skip the fetch if not.
+* **Last-write-wins on conflicts**, plus a logout signal across tabs.
+
+I tried to break it before building it. Two tabs saving at once, a tab asleep while another saves, a session expiring with a draft sitting in the cache, a duplicated tab carrying an old snapshot. Most of these had clean answers. Messages carry hints and never data, so a forged or reordered message can’t corrupt state. The counters make staleness detectable without downloading anything. Last-write-wins is acceptable for a single user editing their own resume.
+
+---
+
+## Where the design strained
+
+It held up logically and still bothered me, for three reasons.
+
+First, the cache can only skip a fetch if something tells it the data is fresh. Hints reach only tabs that are open at that moment. Edits from another device reach no one. So the counter was not optional, which means a schema change, new fields in two endpoints, and comparison logic on every load and focus.
+
+Second, every mechanism I added multiplied the states I had to reason about and test: stale cache, missed hint, frozen tab, logout racing a save. Each one has a good answer. Together they are a lot of surface for one maintainer.
+
+Third, I had never written down the requirement. “Minimize requests” was a preference that I had been treating as a constraint.
+
+---
+
+## The number that settled it
+
+A full resume fetch is about **4 to 10 KB**.
+
+That is smaller than most images on the page. The mechanism meant to avoid it would cost a migration, new endpoints, invalidation rules, a sync module and a long test matrix, all maintained indefinitely. The benefit was a few kilobytes per reload. I couldn’t justify that trade, and I stopped.
+
+---
+
+## What shipped
+
+The parts I kept have nothing to do with bandwidth. They protect the user’s work and the server.
+
+Drafts live in local component state, and Jotai holds only saved data. Each section keeps what the user is typing in its own `useState`. Typing never touches Jotai, so the preview and the rest of the app don't re-render per keystroke, and there is no debounce to tune. The atom changes only after the backend confirms the save:
+
+```javascript
+async function handleSave() {
+  setSaving(true);
+  try {
+    await api.patchSection('exp', draft);          // throws if the backend rejects it
+    setResume(prev => ({ ...prev, exp: draft }));  // the atom changes only on success
+  } catch (err) {
+    showError(err);                                // atom untouched, draft stays in the form
+  } finally {
+    setSaving(false);
+  }
+}
+```
+
+Two details make this safe. The form state is initialized from the atom once and not re-synced from it afterwards, so a successful save can’t overwrite what the user typed during the request. And the backend stores the validated payload unchanged, so writing the sent data into the atom is accurate without a follow-up GET.
+
+The rest of what shipped is deliberately boring:
+
+* A single handler for 401 that resets client state and redirects to login.
+* A warning while any section has unsaved edits.
+* Server-side checks: section names matched against a fixed allow-list instead of reaching SQL, every query filtered by the authenticated user, the payload stored as raw JSON after validation, and CSRF protection on writes.
+* A refetch when the tab regains focus, which is cheap and covers most stale-tab cases.
+
+---
+
+## When I’d revisit it
+
+I parked the larger design behind concrete triggers rather than deleting the idea:
+
+* If I add version history, revision numbers come with it naturally.
+* If users really work in two tabs on one resume and it causes problems, cross-tab hints are a small addition.
+* If reload latency or request volume shows up in measurements, the cache returns.
+
+None of the current code blocks any of these, which was a deliberate part of the decision.
+
+---
+
+## What I’d tell a friend
+
+* **Write the requirement before the design.** A goal like fewer requests needs a number attached, or it will justify anything.
+* **Price the maintenance, not just the build.** A mechanism you can’t remove cheaply is a loan.
+* **Stress-testing a design proves it can work, not that it should exist.** I could not break the design. It still wasn’t worth building.
+
+The most useful decision in this whole exercise was the one that deleted code I hadn’t written yet.

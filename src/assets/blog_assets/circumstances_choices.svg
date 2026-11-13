@@ -1,0 +1,46 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" fill="none">
+  <rect width="1200" height="675" fill="#F4F0E8"/>
+
+  <!-- Distant hills -->
+  <path d="M0 365 Q155 250 315 327 Q460 385 605 284 Q765 178 930 286 Q1080 370 1200 265 V675 H0Z" fill="#D9D5C7"/>
+  <path d="M0 415 Q175 325 335 393 Q510 463 700 344 Q880 232 1030 358 Q1120 410 1200 350 V675 H0Z" fill="#C4C2B1"/>
+
+  <!-- Morning sun -->
+  <circle cx="850" cy="205" r="77" fill="#D9B98D" opacity=".8"/>
+  <circle cx="850" cy="205" r="103" stroke="#D9B98D" stroke-width="1" opacity=".4"/>
+
+  <!-- Far landscape -->
+  <path d="M0 480 Q170 398 345 460 Q535 520 710 425 Q910 315 1200 440 V675 H0Z" fill="#A9AA91"/>
+
+  <!-- Winding path -->
+  <path d="M500 675 C545 580 715 565 684 488 C657 424 544 427 598 357 C642 300 738 296 782 274 C821 255 829 231 834 205 C846 251 834 290 802 319 C749 366 656 368 644 414 C626 482 776 488 755 561 C743 605 664 636 649 675Z" fill="#E9DFCB"/>
+
+  <!-- Foreground -->
+  <path d="M0 552 Q185 470 350 546 Q480 607 620 548 Q830 467 1000 545 Q1120 592 1200 530 V675 H0Z" fill="#777E68"/>
+  <path d="M0 603 Q185 535 360 600 Q530 661 695 584 Q910 487 1200 592 V675 H0Z" fill="#626F5D"/>
+
+  <!-- Figure shadow -->
+  <ellipse cx="608" cy="493" rx="24" ry="7" fill="#454C43" opacity=".25"/>
+
+  <!-- Walking figure -->
+  <circle cx="603" cy="405" r="13" fill="#343B35"/>
+  <path d="M591 424 Q604 416 615 427 L620 464 L592 467Z" fill="#343B35"/>
+  <path d="M596 462 L591 489 L575 503" stroke="#343B35" stroke-width="9" stroke-linecap="round"/>
+  <path d="M611 462 L620 483 L634 489" stroke="#343B35" stroke-width="9" stroke-linecap="round"/>
+  <path d="M593 432 L577 455" stroke="#343B35" stroke-width="7" stroke-linecap="round"/>
+  <path d="M613 433 L627 449" stroke="#343B35" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Small organic foreground details -->
+  <path d="M115 567 Q102 540 113 521 M113 546 Q92 533 87 518 M113 550 Q135 527 143 526" stroke="#D3C6A8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M1035 551 Q1020 525 1031 500 M1030 532 Q1010 518 1005 506 M1031 536 Q1050 513 1060 511" stroke="#D3C6A8" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Birds -->
+  <path d="M260 174 Q275 157 290 174 Q305 157 320 174" stroke="#777E68" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M350 215 Q360 204 370 215 Q380 204 390 215" stroke="#777E68" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Grain-like editorial detail -->
+  <path d="M65 70 H180" stroke="#A9AA91" stroke-width="1"/>
+  <circle cx="65" cy="70" r="3" fill="#A9AA91"/>
+  <path d="M1020 620 H1135" stroke="#D9B98D" stroke-width="1"/>
+</svg>
