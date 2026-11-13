@@ -12,7 +12,7 @@ export const Footer = () => {
           <a href="/" className="hover:text-white transition-colors">Main</a>
           <a href="/#about" className="hover:text-white transition-colors">About</a>
           <a href="/#projects" className="hover:text-white transition-colors">Projects</a>
-          <a href="/#articles" className="hover:text-white transition-colors">Articles</a>
+          {/* <a href="/#articles" className="hover:text-white transition-colors">Articles</a> */}
           <a href="/blog" className="hover:text-white transition-colors">Blog</a>
           <a href="/#contact" className="hover:text-white transition-colors">Contact</a>
         </div>
