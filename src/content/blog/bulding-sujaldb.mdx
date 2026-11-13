@@ -1,0 +1,43 @@
+---
+title: "Building sujaldb: An LSM-Tree Storage Engine in Rust"
+description: "I'm writing my own LSM-tree storage engine in Rust to understand databases and systems programming. First up: the write-ahead log."
+pubDate: 2026-11-13
+category: "Systems Programming"
+readTime: "2 min read"
+draft: false
+heroImage: "../../assets/blog_assets/building_sujaldb.svg"
+---
+
+*Building my own storage engine in Rust, to understand how databases really work.*
+
+A storage engine is the part of a database that writes data to disk and reads it back. Many modern databases, like RocksDB, LevelDB and Cassandra, build theirs on an LSM tree: writes land in memory and an append-only log first, then get flushed to sorted files on disk and merged later.
+
+This post is about where I've started: sujaldb, my own LSM-tree-based storage engine, written in Rust.
+
+## Why I'm building it
+
+Reading about databases only gets me so far. I want to understand how they really work, so I'm building one.
+
+- Understand how a database stores data and recovers from crashes
+- Get comfortable with systems programming in Rust
+- Get a real feel for the foundations that distributed databases are built on
+
+## Starting with the write-ahead log
+
+I'm starting with the write-ahead log (WAL). Every write is recorded in a log on disk first, so after a crash the engine can rebuild what it had in memory. It's the layer the rest of the engine leans on, which makes it a good place to learn how a database stays durable.
+
+WAL v1 is done. What it does:
+
+- Append-only: records are only ever added to the end of the file
+- Each record holds a sequence number, an operation (set or delete), a key and a value
+- CRC32 on every record, so corruption can be detected
+- One write call per record
+- You choose when to fsync, so durability is a decision rather than a cost on every write
+
+v1 only writes. There's no reader or replay yet, and no write buffering.
+
+## What's next
+
+v2 of the WAL adds buffering. Right now almost every write is a system call, and buffering will cut that down.
+
+I'm building sujaldb as I go, one layer at a time, and only moving on once I understand the one I'm on. Slow on purpose.
