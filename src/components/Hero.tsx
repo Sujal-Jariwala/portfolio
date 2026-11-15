@@ -1,133 +1,50 @@
-import React, { useRef } from 'react';
-import { ArrowRight, ArrowLeft, Mail } from 'lucide-react';
-import { FiGithub as Github, FiLinkedin as Linkedin } from 'react-icons/fi';
-import type { Articles } from './Articles';
+import { Arrow, Crab, Gopher, Mug, Socrates } from "./Stickers";
 
-const carouselItems: Articles[] = [
-  {
-    title: "Circumstances Don't Define a Man. His Choices Do.",
-    desc: "We are often quick to attribute character to circumstances. But if circumstances alone defined a person, wouldn't everyone raised in similar environments turn out the same?",
-    link: "/blog/circumstances-dont-define-a-man"
-  },
-  {
-    title: "Engineering a zero-trust document upload pipeline",
-    desc: "Implementing ClamAV and Content Disarm to ensure secure document handling.",
-    link: "/blog/zero-trust-upload-pipeline"
-  },
-  {
-    title: "Building a resume builder with Astro",
-    desc: "Why I chose SSG for marketing/SEO and CSR for the editor.",
-    link: "/blog/ssgoverssr"
-  },
-  {
-    title: "The Cache I Didn’t Build: Client State in a Resume Builder",
-    desc: "A decision record on browser storage, multi-tab sync, and why the right amount of machinery turned out to be very little.",
-    link: "/blog/the-cache-i-didnt-build"
-  }
-];
+export const Hero = () => (
+  <header className="flex flex-col px-[18px] pt-4 pb-8 sm:px-6 sm:pt-5 sm:pb-10">
+    {/* Sticker cluster (decorative) */}
+    <div
+      aria-hidden="true"
+      className="relative mb-1.5 h-[clamp(240px,42vw,330px)]"
+    >
+      <div className="absolute -inset-x-[6%] -inset-y-[8%] bg-[radial-gradient(ellipse_58%_52%_at_50%_52%,var(--band),transparent_72%)]" />
+      <Gopher
+        className="sticker-pop absolute"
+        style={{ "--r": "-8deg", "--w": "clamp(78px,19vw,150px)", "--d": "0s", left: "2%", top: "4%" }}
+      />
+      <Socrates
+        className="sticker-pop absolute"
+        style={{ "--r": "3deg", "--w": "clamp(92px,23vw,178px)", "--d": "0.1s", left: "29%", top: "20%" }}
+      />
+      <Crab
+        className="sticker-pop absolute"
+        style={{ "--r": "7deg", "--w": "clamp(72px,18vw,140px)", "--d": "0.2s", left: "63%", top: "2%" }}
+      />
+      <Arrow
+        className="sticker-pop absolute"
+        style={{ "--r": "-12deg", "--w": "clamp(70px,17vw,132px)", "--d": "0.3s", left: "79%", top: "46%" }}
+      />
+      <Mug
+        className="sticker-pop absolute"
+        style={{ "--r": "6deg", "--w": "clamp(64px,14vw,108px)", "--d": "0.4s", left: "6%", top: "62%" }}
+      />
+    </div>
 
-export const Hero = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+    {/* <p className="mb-2 flex items-center gap-3 text-[15px] text-mute">
+      <b className=" text-[34px] font-normal italic leading-none tracking-[-0.02em] text-ink">
+        Sujal
+      </b>
+      <span className="pulse-dot" aria-hidden="true" />
+      <span>Building Resumetop</span>
+    </p> */}
 
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      if (scrollLeft <= 10) {
-        scrollRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
-      } else {
-        scrollRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' });
-      }
-    }
-  };
+    <h1 className="mb-2.5  text-[clamp(32px,5.4vw,50px)] font-normal italic leading-[1.08] tracking-[-0.025em]">
+      Hey there, I’m Sujal, a software engineer.
+    </h1>
 
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      if (scrollLeft + clientWidth >= scrollWidth - 10) {
-        scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        scrollRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
-      }
-    }
-  };
-
-  return (
-    <section className="relative pt-24 pb-16 px-6 md:px-12 flex flex-col min-h-[80vh] justify-center overflow-hidden">
-
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 relative z-10">
-        <div className="max-w-3xl">
-          <h1 className="text-6xl md:text-8xl lg:text-[7rem] leading-[1.1] mb-8 tracking-tight">
-            <span className="block text-white">Software</span>
-            <span className="block text-white">Engineer</span>
-          </h1>
-
-          <p className="text-lg md:text-xl max-w-lg text-gray-light leading-relaxed italic border-l border-border-subtle pl-4 mb-8 md:mb-0">
-            I build clean, fast and useful software for the web. Focused on thoughtful interfaces, reliable backends, and products that solve real problems.
-          </p>
-        </div>
-
-        <div className="flex items-center space-x-3 self-start md:self-end mt-8 md:mt-0">
-          <a href="#projects" className="bg-white text-bg-inner font-display px-8 py-3 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-white/20">
-            Projects
-          </a>
-          <a href="#projects" className="flex items-center justify-center w-12 h-12 bg-transparent border border-white text-white rounded-full hover:bg-white hover:text-bg-inner hover:scale-105 transition-all duration-300 group">
-            <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-45" />
-          </a>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-4 mb-24 relative z-10">
-        <a href="https://github.com/Sujal-Jariwala" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 border border-border-subtle rounded-full px-5 py-2 hover:border-white hover:text-white hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300 text-sm group">
-          <Github size={16} className="group-hover:scale-110 transition-transform duration-300" />
-          <span>GitHub</span>
-        </a>
-        <a href="https://www.linkedin.com/in/sujal-jariwala-b9b814267/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 border border-border-subtle rounded-full px-5 py-2 hover:border-white hover:text-white hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300 text-sm group">
-          <Linkedin size={16} className="group-hover:scale-110 transition-transform duration-300" />
-          <span>LinkedIn</span>
-        </a>
-        <a href="mailto:thisisjariwalasujal@gmail.com" className="flex items-center space-x-2 border border-border-subtle rounded-full px-5 py-2 hover:border-white hover:text-white hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300 text-sm group">
-          <Mail size={16} className="group-hover:scale-110 transition-transform duration-300" />
-          <span>Email</span>
-        </a>
-      </div>
-
-      <div className="w-full relative z-10 md:max-w-xl mx-auto">
-        <div
-          ref={scrollRef}
-          className="scrollbar-hide flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 -mx-6 px-6 md:mx-0 md:px-0"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {/* Add a style tag for webkit scrollbar hiding just for this container */}
-          <style>{`
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-          `}</style>
-
-          {carouselItems.map((item, idx) => (
-            <div key={idx} className="min-w-[85vw] md:min-w-full snap-center bg-gray-medium/10 border border-border-subtle rounded-3xl p-8 md:p-10 flex flex-col justify-between group hover:border-white/30 transition-colors duration-300">
-              <div>
-                <h3 className="text-2xl md:text-3xl text-white mb-4 font-display leading-tight">{item.title}</h3>
-                <p className="text-gray-light text-sm md:text-base leading-relaxed">{item.desc}</p>
-              </div>
-              <div className="flex gap-3 mt-10">
-                <a href={item.link} className="bg-white text-bg-inner text-sm px-6 py-2 rounded-full font-medium hover:bg-gray-200 hover:scale-105 transition-all duration-300">Read article</a>
-                <a href={item.link} className="w-9 h-9 bg-transparent border border-white text-white flex items-center justify-center rounded-full hover:bg-white hover:text-bg-inner hover:scale-110 transition-all duration-300"><ArrowRight size={16} /></a>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-center gap-4 mt-4 md:mt-8">
-          <button onClick={scrollLeft} className="w-12 h-12 rounded-full border border-border-subtle bg-bg-inner/50 flex items-center justify-center hover:bg-white hover:text-bg-inner hover:scale-110 transition-all duration-300 backdrop-blur-md cursor-pointer text-white">
-            <ArrowLeft size={20} />
-          </button>
-          <button onClick={scrollRight} className="w-12 h-12 rounded-full border border-border-subtle bg-bg-inner/50 flex items-center justify-center hover:bg-white hover:text-bg-inner hover:scale-110 transition-all duration-300 backdrop-blur-md cursor-pointer text-white">
-            <ArrowRight size={20} />
-          </button>
-        </div>
-      </div>
-
-    </section>
-  );
-};
+    <p className="max-w-[56ch] text-mute">
+      From hybrid frontends to Go APIs to an LSM storage engine in Rust, I get
+      my hands dirty with all of it.
+    </p>
+  </header>
+);

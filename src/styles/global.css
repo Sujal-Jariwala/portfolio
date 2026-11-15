@@ -1,44 +1,449 @@
 @import "tailwindcss";
 
-@theme {
-  --color-bg-outer: #0a0a0a;
-  --color-bg-inner: #121212;
-  --color-white: #F5F5F5;
-  --color-gray-light: #A6A6A6;
-  --color-gray-medium: #3D3D3D;
-  --color-border-subtle: rgba(255, 255, 255, 0.15);
-  --color-circle: rgba(255, 255, 255, 0.12);
-  
-  --font-display: "Fira Code", monospace;
-  --font-body: "Open Sans", sans-serif;
+/* ------------------------------------------------------------------
+   Fonts: load these in your layout <head> (Google Fonts):
+   Hanken Grotesk 400/500/700, Fraunces italic 400 (opsz 9..144), Caveat 500
+------------------------------------------------------------------- */
+
+/* Design tokens -> Tailwind utilities.
+   `inline` makes utilities read the live CSS variables below, so
+   switching data-theme re-colours everything with no `dark:` variants.
+   e.g. bg-panel, text-ink, text-mute, border-line, bg-band, text-acc */
+@theme inline {
+  --color-page: var(--page);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-line: var(--line);
+  --color-line-strong: var(--line2);
+  --color-band: var(--band);
+  --color-acc: var(--acc);
+  --color-onpage: var(--onpage);
+
+  --font-sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Raw theme values. Default = paper. Set <html data-theme="paper|dark">. */
+:root {
+  --page: #021f94;
+  --panel: #f5f2f3;
+  --ink: #021f94;
+  --mute: rgba(2, 31, 148, 0.72);
+  --line: rgba(2, 31, 148, 0.16);
+  --line2: rgba(2, 31, 148, 0.4);
+  --band: rgba(2, 31, 148, 0.05);
+  --dots: rgba(245, 242, 243, 0.24);
+  --onpage: #f5f2f3;
+  --acc: #021f94;
+  --sh: rgba(2, 12, 60, 0.3);
+  --ring: rgba(2, 31, 148, 0.5);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --page: #0b1013;
+  --panel: #12191e;
+  --ink: #f5f2f3;
+  --mute: rgba(245, 242, 243, 0.68);
+  --line: rgba(245, 242, 243, 0.14);
+  --line2: rgba(245, 242, 243, 0.38);
+  --band: rgba(245, 242, 243, 0.05);
+  --dots: rgba(245, 242, 243, 0.07);
+  --onpage: #f5f2f3;
+  --acc: #8fa3f5;
+  --sh: rgba(0, 0, 0, 0.55);
+  --ring: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* No-JS fallback: follow the OS until data-theme is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --page: #0b1013;
+    --panel: #12191e;
+    --ink: #f5f2f3;
+    --mute: rgba(245, 242, 243, 0.68);
+    --line: rgba(245, 242, 243, 0.14);
+    --line2: rgba(245, 242, 243, 0.38);
+    --band: rgba(245, 242, 243, 0.05);
+    --dots: rgba(245, 242, 243, 0.07);
+    --acc: #8fa3f5;
+    --sh: rgba(0, 0, 0, 0.55);
+    --ring: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
 }
 
 @layer base {
-  :root {
-    color-scheme: dark;
-  }
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px));
   }
+
   body {
-    background-color: var(--color-bg-outer);
-    color: var(--color-gray-light);
-    font-family: var(--font-body);
-    overflow-x: hidden;
     margin: 0;
-    padding: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 400 16px/1.6 var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s;
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    color: var(--color-white);
-    font-weight: 500;
+
+  /* faint dotted texture on the page behind the column */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(var(--dots) 1px, transparent 1.5px) 0 0 / 16px 16px;
+    -webkit-mask-image: linear-gradient(#000 50%, transparent);
+    mask-image: linear-gradient(#000 50%, transparent);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--acc);
+    color: var(--panel);
   }
 }
 
-.decorative-circle {
-  position: absolute;
-  border: 1px solid var(--color-circle);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
+@layer components {
+
+  /* Paper-grain overlay for the main column.
+     Use on the column wrapper: class="noise" */
+  .noise {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.35;
+    background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Diagonal-hatch divider between sections */
+  .hatch {
+    display: block;
+    height: 22px;
+    border-block: 1px solid var(--line);
+    background: repeating-linear-gradient(135deg, transparent 0 5px, var(--line) 5px 6px);
+  }
+
+  /* Fading hatch for the footer */
+  .hatch-fade {
+    display: block;
+    height: 96px;
+    background: repeating-linear-gradient(135deg, transparent 0 5px, var(--line) 5px 6px);
+    -webkit-mask-image: linear-gradient(transparent, #000);
+    mask-image: linear-gradient(transparent, #000);
+  }
+
+  /* Die-cut sticker. Put on an <svg>; size/tilt via CSS vars:
+     style={{ "--w": "150px", "--r": "-8deg" }} */
+  .sticker {
+    display: block;
+    overflow: visible;
+    width: var(--w, 84px);
+    height: auto;
+    transform: rotate(var(--r, 0deg));
+    will-change: transform;
+    filter: drop-shadow(3px 0 0 #f5f2f3) drop-shadow(-3px 0 0 #f5f2f3) drop-shadow(0 3px 0 #f5f2f3) drop-shadow(0 -3px 0 #f5f2f3) drop-shadow(0 0 1px var(--ring)) drop-shadow(0 3px 3px var(--sh)) drop-shadow(0 12px 14px var(--sh));
+    transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
+  .sticker:hover {
+    transform: rotate(calc(var(--r, 0deg) * -1)) translateY(-7px) scale(1.08);
+  }
+
+  /* Entrance for the hero cluster; stagger with --d: "0.1s" */
+  .sticker-pop {
+    animation: pop 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+    animation-delay: var(--d, 0s);
+  }
+
+  /* Theme toggle: two circles that slide together on hover */
+  .theme-swap {
+    position: relative;
+    flex: none;
+    margin-left: auto;
+    width: 40px;
+    height: 30px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: none;
+    cursor: pointer;
+  }
+
+  .theme-swap::before,
+  .theme-swap::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
+  .theme-swap::before {
+    left: 8px;
+    background: var(--ink);
+  }
+
+  .theme-swap::after {
+    right: 8px;
+  }
+
+  .theme-swap:hover::before {
+    transform: translateX(4px);
+  }
+
+  .theme-swap:hover::after {
+    transform: translateX(-4px);
+  }
+
+  /* Pulsing dot next to the name */
+  .pulse-dot {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--acc);
+  }
+
+  .pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid var(--acc);
+    animation: ring 2.6s ease-out infinite;
+  }
+
+  /* Receipt (Stack section). Always paper + blue ink, in both themes.
+     Add data-on="true" (e.g. on scroll into view) to print it. */
+  .receipt {
+    position: relative;
+    filter: drop-shadow(0 12px 14px var(--sh));
+    transform: rotate(-1deg);
+    transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
+  .receipt:hover {
+    transform: rotate(0);
+  }
+
+  .receipt-paper {
+    background: #f5f2f3;
+    color: #021f94;
+    box-shadow: inset 0 0 0 1px rgba(2, 31, 148, 0.1);
+    -webkit-mask:
+      radial-gradient(circle 7px at 50% 0, transparent 98%, #000) top / 18px 51% repeat-x,
+      radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) bottom / 18px 51% repeat-x;
+    mask:
+      radial-gradient(circle 7px at 50% 0, transparent 98%, #000) top / 18px 51% repeat-x,
+      radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) bottom / 18px 51% repeat-x;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .receipt[data-on="true"] .receipt-paper {
+    clip-path: inset(0);
+    transition: clip-path 1.8s cubic-bezier(0.4, 0.1, 0.2, 1);
+  }
+
+  .barcode {
+    height: 34px;
+    background: repeating-linear-gradient(90deg,
+        #021f94 0 2px,
+        transparent 2px 4px,
+        #021f94 4px 5px,
+        transparent 5px 8px,
+        #021f94 8px 11px,
+        transparent 11px 13px);
+  }
+
+  /* Bookshelf (Reading section).
+     <button class="book" aria-expanded="true|false"
+             style="--h:300px; --sw:54px; --cw:206px">
+       <span class="book-face book-spine">…</span>
+       <span class="book-face book-cover">…</span>
+     </button>
+     Open state is driven by aria-expanded, so no extra class is needed. */
+  .book {
+    position: relative;
+    flex: none;
+    width: var(--sw);
+    height: var(--h);
+    border-radius: 3px 6px 6px 3px;
+    overflow: hidden;
+    cursor: pointer;
+    filter: drop-shadow(0 8px 6px var(--sh));
+    transition:
+      width 0.55s cubic-bezier(0.3, 1.1, 0.4, 1),
+      transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
+  .book[aria-expanded="true"] {
+    width: var(--cw);
+    cursor: default;
+  }
+
+  .book[aria-expanded="false"]:hover {
+    transform: translateY(-8px);
+  }
+
+  .book::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.28) 0, rgba(0, 0, 0, 0.08) 3px, transparent 9px);
+  }
+
+  .book-face {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    transition: opacity 0.35s;
+  }
+
+  .book-spine {
+    width: var(--sw);
+  }
+
+  .book-cover {
+    width: var(--cw);
+    opacity: 0;
+  }
+
+  .book[aria-expanded="true"] .book-cover {
+    opacity: 1;
+    transition-delay: 0.15s;
+  }
+
+  .book[aria-expanded="true"] .book-spine {
+    opacity: 0;
+  }
+
+  .vertical-text {
+    writing-mode: vertical-rl;
+  }
+
+  /* The plank under the books */
+  .shelf-board::after {
+    content: "";
+    display: block;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--acc);
+    box-shadow: 0 10px 16px -8px var(--sh);
+  }
+
+  /* Book summary disclosure (<details class="summary-box">).
+     Show/hide the active book's box with the `hidden` attribute. */
+  .summary-box {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--band);
+  }
+
+  .summary-box>summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+    border-radius: 12px;
+  }
+
+  .summary-box>summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .summary-box>summary::after {
+    content: "+";
+    font-size: 20px;
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  .summary-box[open]>summary::after {
+    content: "\2013";
+  }
+
+  .summary-box {
+    interpolate-size: allow-keywords;
+  }
+
+  .summary-box::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 0.5s cubic-bezier(0.4, 0.1, 0.2, 1),
+      content-visibility 0.5s allow-discrete;
+  }
+
+  .summary-box[open]::details-content {
+    block-size: auto;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: rotate(var(--r)) scale(0.35);
+  }
+}
+
+@keyframes ring {
+  from {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .sticker-pop,
+  .pulse-dot::after {
+    animation: none;
+  }
+
+  .summary-box::details-content {
+    transition: none;
+  }
+
+  .receipt-paper,
+  .receipt[data-on="true"] .receipt-paper {
+    clip-path: none;
+    transition: none;
+  }
 }

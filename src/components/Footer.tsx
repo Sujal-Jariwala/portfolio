@@ -1,27 +1,16 @@
-import React from 'react';
-
 export const Footer = () => {
   return (
-    <footer className="py-12 px-6 md:px-12 border-t border-border-subtle relative z-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12">
-        <div className="font-display text-white text-xl uppercase tracking-widest">
-          <a href="/" className="hover:opacity-80 transition-opacity">Jariwala Sujal</a>
-        </div>
-        
-        <div className="flex flex-wrap gap-8 text-sm">
-          <a href="/" className="hover:text-white transition-colors">Main</a>
-          <a href="/#about" className="hover:text-white transition-colors">About</a>
-          <a href="/#projects" className="hover:text-white transition-colors">Projects</a>
-          {/* <a href="/#articles" className="hover:text-white transition-colors">Articles</a> */}
-          <a href="/blog" className="hover:text-white transition-colors">Blog</a>
-          <a href="/#contact" className="hover:text-white transition-colors">Contact</a>
-        </div>
+    <footer className="flex flex-col overflow-hidden text-center">
+      <div className="flex flex-col items-center px-6 pt-12">
+        <blockquote className="mb-3.5 max-w-[26ch]  text-[clamp(22px,3vw,28px)] leading-[1.25] font-normal tracking-[-0.015em] italic">
+          The unexamined life is not worth living.
+          <cite className="mt-1.5 block font-sans text-sm leading-[1.4] font-normal text-mute not-italic">
+            Socrates
+          </cite>
+        </blockquote>
+        <p className="m-0 text-[13.5px] text-mute">© 2026 Sujal</p>
       </div>
-      
-      <div className="flex flex-col md:flex-row justify-between text-xs text-gray-medium pt-8 border-t border-border-subtle">
-        <p>Handcrafted by ME / Designed by inspiration</p>
-        <p className="mt-2 md:mt-0">Built with Astro / React / Tailwind CSS</p>
-      </div>
+      <div className="hatch-fade mt-12" aria-hidden="true" />
     </footer>
   );
 };

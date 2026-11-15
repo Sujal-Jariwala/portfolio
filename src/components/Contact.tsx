@@ -1,44 +1,110 @@
-import React from 'react';
-import { Mail } from 'lucide-react';
-import { FiGithub as Github, FiLinkedin as Linkedin } from 'react-icons/fi';
+import { useRef, useState } from "react";
+import { ArrowUpRight, Copy, Mail } from "lucide-react";
+import { FiGithub, FiLinkedin } from "react-icons/fi";
+import { Postcard } from "./Stickers";
+
+const EMAIL = "thisisjariwalasujal@gmail.com";
+
+const SOCIALS = [
+  {
+    name: "GitHub",
+    Icon: FiGithub,
+    handle: "@Sujal-Jariwala",
+    href: "https://github.com/Sujal-Jariwala",
+  },
+  {
+    name: "LinkedIn",
+    Icon: FiLinkedin,
+    handle: "in/sujal-jariwala-b9b814267",
+    href: "https://www.linkedin.com/in/sujal-jariwala-b9b814267/",
+  },
+  { name: "Email", Icon: Mail, handle: EMAIL, href: `mailto:${EMAIL}`, copy: true },
+];
 
 export const Contact = () => {
+  const emailRef = useRef<HTMLSpanElement>(null);
+  const [copyLabel, setCopyLabel] = useState<string | null>(null);
+
+  async function copyEmail() {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopyLabel("Copied");
+    } catch {
+      const el = emailRef.current;
+      if (el) {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+      setCopyLabel("Selected");
+    }
+    setTimeout(() => setCopyLabel(null), 1800);
+  }
+
   return (
-    <section id="contact" className="py-32 px-6 md:px-12 relative border-t border-border-subtle overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-circle rounded-full pointer-events-none z-0"></div>
-      
-      <div className="flex justify-center mb-16 relative z-10">
-        <p className="font-display text-sm tracking-wider">... /Contacts ...</p>
+    <section id="contact" data-label="Contact" className="relative scroll-mt-16">
+      <div className="hatch" aria-hidden="true" />
+
+      <div className="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
+        <h2 className="m-0  text-[32px] leading-none font-normal tracking-[-0.025em] italic">
+          Contact
+        </h2>
+        <Postcard className="-my-2.5" style={{ "--w": "62px", "--r": "8deg" }} />
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-end relative z-10">
-        <div className="w-full md:w-1/2 mb-12 md:mb-0">
-          <h2 className="text-6xl md:text-8xl lg:text-[7rem] font-display text-white leading-[1.1] mb-6">
-            <span className="block">Jariwala</span>
-            <span className="block">Sujal</span>
-          </h2>
-          <p className="font-display text-gray-medium text-lg">Software Engineer</p>
-        </div>
-        
-        <div className="w-full md:w-1/2 flex flex-col items-start md:items-end">
-          <p className="text-xl md:text-2xl text-white italic max-w-md md:text-right mb-12 leading-relaxed">
-            Have an idea, project, or opportunity?<br/>Let's talk.
-          </p>
-          
-          <div className="flex flex-wrap gap-4 justify-start md:justify-end">
-            <a href="https://github.com/Sujal-Jariwala" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 border border-border-subtle rounded-full px-6 py-3 hover:border-white hover:text-white hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300 text-sm group">
-              <Github size={18} className="group-hover:scale-110 transition-transform duration-300" />
-              <span>GitHub</span>
-            </a>
-            <a href="https://www.linkedin.com/in/sujal-jariwala-b9b814267/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 border border-border-subtle rounded-full px-6 py-3 hover:border-white hover:text-white hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300 text-sm group">
-              <Linkedin size={18} className="group-hover:scale-110 transition-transform duration-300" />
-              <span>LinkedIn</span>
-            </a>
-            <a href="mailto:thisisjariwalasujal@gmail.com" className="flex items-center space-x-2 border border-border-subtle rounded-full px-6 py-3 hover:border-white hover:text-white hover:-translate-y-1 hover:bg-white/[0.02] transition-all duration-300 text-sm group">
-              <Mail size={18} className="group-hover:scale-110 transition-transform duration-300" />
-              <span>Email</span>
-            </a>
-          </div>
+      <div className="overflow-hidden">
+        <div className="-mb-px grid grid-cols-1 sm:grid-cols-2">
+          {SOCIALS.map((s, i) => {
+            const wide = SOCIALS.length % 2 === 1 && i === SOCIALS.length - 1;
+            const rightBorder = i % 2 === 0 && !wide;
+            return (
+              <div
+                key={s.name}
+                className={`group relative flex items-center gap-3.5 border-b border-line px-5 py-4 transition-colors hover:bg-band ${wide ? "sm:col-span-2" : ""
+                  } ${rightBorder ? "sm:border-r" : ""}`}
+              >
+                <span className="grid size-[38px] flex-none place-items-center rounded-[10px] border border-line transition-colors group-hover:border-acc group-hover:bg-acc group-hover:text-panel">
+                  <s.Icon size={18} aria-hidden="true" />
+                </span>
+
+                <span className="min-w-0">
+                  <a
+                    href={s.href}
+                    target={s.copy ? undefined : "_blank"}
+                    rel={s.copy ? undefined : "noopener noreferrer"}
+                    className="font-medium no-underline after:absolute after:inset-0 after:content-['']"
+                  >
+                    {s.name}
+                  </a>
+                  <span
+                    ref={s.copy ? emailRef : undefined}
+                    className="block truncate text-[13.5px] text-mute"
+                  >
+                    {s.handle}
+                  </span>
+                </span>
+
+                {s.copy ? (
+                  <button
+                    type="button"
+                    aria-label="Copy email"
+                    onClick={copyEmail}
+                    className="relative z-[2] ml-auto grid h-[30px] min-w-[30px] flex-none cursor-pointer place-items-center rounded-lg border border-line bg-transparent px-2 text-[12.5px] leading-none font-medium text-inherit hover:bg-band"
+                  >
+                    {copyLabel ?? <Copy size={15} aria-hidden="true" />}
+                  </button>
+                ) : (
+                  <ArrowUpRight
+                    size={14}
+                    aria-hidden="true"
+                    className="ml-auto flex-none opacity-[.55] transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

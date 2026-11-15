@@ -4,14 +4,8 @@ import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
-import { DecorativeCircle } from "../../components/DecorativeCircle";
-import {
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { Scroll } from "../../components/Stickers";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -31,358 +25,231 @@ const otherPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 
-const formattedDate = post.data.pubDate.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+const fmt = (d: Date, month: "short" | "long") =>
+  d.toLocaleDateString("en-US", { year: "numeric", month, day: "numeric" });
 ---
 
 <Layout title={`${post.data.title} | Sujal Jariwala`}>
-  <main class="min-h-screen relative overflow-hidden bg-bg-outer text-gray-light">
-    {/* Global background circles */}
-    <div
-      class="absolute -top-125 -right-125 w-300 h-300 border border-circle rounded-full pointer-events-none z-0"
-    >
-    </div>
-    <div
-      class="absolute top-[25%] -left-150 w-250 h-250 border border-circle rounded-full pointer-events-none z-0"
-    >
-    </div>
+  <div class="flex justify-center">
+    <main class="noise min-h-screen w-full max-w-3xl border-x border-line bg-panel transition-colors duration-[400ms]">
+      <Navbar client:load />
 
-    {/* Outer Breadcrumb Section */}
-    <div class="max-w-7xl mx-auto px-6 py-12 md:py-16 relative z-10">
-      <div
-        class="flex flex-col md:flex-row justify-between items-start text-sm text-gray-light gap-4"
-      >
-        <div>
-          <a
-            href="/blog"
-            class="font-display tracking-wider hover:text-white transition-colors flex items-center gap-2 group"
-          >
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            <span>... /Home / Blog / {post.id} ...</span>
-          </a>
-        </div>
-        <div class="text-xs md:text-sm font-display text-gray-light flex items-center gap-3">
-          <span>{post.data.category}</span>
-          <span class="text-gray-medium">•</span>
-          <span>{post.data.readTime}</span>
-        </div>
+      <div class="hatch" aria-hidden="true"></div>
+      <div class="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 font-medium no-underline hover:underline hover:decoration-1 hover:underline-offset-[5px]"
+        >
+          <ArrowLeft size={14} aria-hidden="true" />
+          <span>Blog</span>
+        </a>
+        <Scroll className="-my-2.5" style={{ "--w": "62px", "--r": "-5deg" }} />
       </div>
-    </div>
 
-    {/* Main Portfolio Container */}
-    <div class="max-w-300 mx-auto px-4 md:px-6 mb-32 relative z-10">
-      <div
-        class="bg-bg-inner border border-border-subtle rounded-4xl overflow-hidden shadow-2xl relative"
-      >
-        <DecorativeCircle size="800px" top="-400px" right="-200px" />
-        <DecorativeCircle size="600px" bottom="15%" left="-300px" />
-        <DecorativeCircle size="1000px" top="40%" right="-500px" />
+      <article class="flex flex-col gap-8 p-[18px] sm:p-6">
+        <header class="flex flex-col gap-4">
+          <div class="flex flex-wrap items-center gap-2.5 text-[13.5px] text-mute">
+            <span class="inline-block rounded-[10px] border border-line-strong px-2.5 py-0.5 leading-normal">
+              {post.data.category}
+            </span>
+            <time datetime={post.data.pubDate.toISOString()}>
+              {fmt(post.data.pubDate, "long")}
+            </time>
+            <span>{post.data.readTime}</span>
+          </div>
 
-        <Navbar client:load />
+          <h1 class="m-0  text-[clamp(30px,5vw,42px)] leading-[1.1] font-normal tracking-[-0.025em] italic text-balance">
+            {post.data.title}
+          </h1>
 
-        {/* Article Container */}
-        <article class="relative z-10 px-6 md:px-16 lg:px-24 py-16 md:py-24 max-w-4xl mx-auto">
-          {/* Back Button */}
-          <div class="mb-10">
+          <p class="m-0 max-w-[60ch] text-[17.5px] text-mute text-pretty">
+            {post.data.description}
+          </p>
+
+          {post.data.mediumUrl && (
+            <a
+              href={post.data.mediumUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 self-start text-[13.5px] underline decoration-line-strong underline-offset-4 hover:decoration-current"
+            >
+              <span>Originally on Medium</span>
+              <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
+          )}
+        </header>
+
+        {post.data.heroImage && (
+          <Image
+            src={post.data.heroImage}
+            alt={post.data.title}
+            width={1200}
+            height={630}
+            class="h-auto max-h-[500px] w-full rounded-xl border border-line object-cover"
+          />
+        )}
+
+        <div class="post-markdown-content">
+          <Content />
+        </div>
+      </article>
+
+      {otherPosts.length > 0 && (
+        <section>
+          <div class="hatch" aria-hidden="true"></div>
+          <div class="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
+            <h2 class="m-0  text-[32px] leading-none font-normal tracking-[-0.025em] italic">
+              More writing
+            </h2>
             <a
               href="/blog"
-              class="inline-flex items-center gap-2.5 text-xs md:text-sm font-display text-gray-light hover:text-white border border-border-subtle hover:border-white rounded-full px-4 py-2 transition-all duration-300 group bg-bg-outer/30"
+              class="inline-flex items-center gap-1.5 text-[13.5px] no-underline hover:underline hover:decoration-1 hover:underline-offset-[5px]"
             >
-              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Back to all articles</span>
+              <span>View all</span>
+              <ArrowRight size={13} aria-hidden="true" />
             </a>
           </div>
 
-          {/* Article Header */}
-          <header class="mb-14 pb-12 border-b border-border-subtle">
-            {/* Category & Read Time */}
-            <div class="flex flex-wrap items-center gap-3 mb-6">
-              <span class="border border-border-subtle rounded-full px-3.5 py-1 text-xs text-white font-display bg-white/5 uppercase tracking-wider">
-                {post.data.category}
-              </span>
-              <span class="text-gray-medium">•</span>
-              <span class="flex items-center gap-1.5 text-xs font-display text-gray-light">
-                <Clock size={13} />
-                {post.data.readTime}
-              </span>
-              <span class="text-gray-medium">•</span>
-              <span class="flex items-center gap-1.5 text-xs font-display text-gray-light">
-                <Calendar size={13} />
-                <time datetime={post.data.pubDate.toISOString()}>
-                  {formattedDate}
-                </time>
-              </span>
-            </div>
-
-            {/* Title */}
-            <h1 class="text-3xl md:text-5xl lg:text-5xl font-display text-white leading-[1.2] tracking-tight mb-8">
-              {post.data.title}
-            </h1>
-
-            {/* Description / Lead */}
-            <p class="text-lg md:text-xl text-gray-light italic leading-relaxed border-l-2 border-white/20 pl-4 mb-8">
-              {post.data.description}
-            </p>
-
-            {/* Author bar & Medium cross-post link */}
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-border-subtle/50 text-xs font-display">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white/10 border border-border-subtle flex items-center justify-center text-white font-display font-medium text-xs">
-                  SJ
-                </div>
-                <div>
-                  <p class="text-white font-medium">Sujal Jariwala</p>
-                  <p class="text-gray-medium text-[11px]">Software Engineer</p>
-                </div>
-              </div>
-
-              {post.data.mediumUrl && (
-                <div>
-                  <a
-                    href={post.data.mediumUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 underline underline-offset-4 transition-colors"
-                  >
-                    <span>Originally on Medium</span>
-                    <ArrowUpRight size={13} />
-                  </a>
-                </div>
-              )}
-            </div>
-          </header>
-
-          {/* Hero Image */}
-          {post.data.heroImage && (
-            <div class="mb-14 overflow-hidden rounded-3xl border border-border-subtle shadow-2xl bg-bg-outer/60">
-              <Image
-                src={post.data.heroImage}
-                alt={post.data.title}
-                width={1200}
-                height={630}
-                class="w-full h-auto object-cover max-h-[500px]"
-              />
-            </div>
-          )}
-
-          {/* Markdown Content Body */}
-          <div class="post-markdown-content leading-relaxed">
-            <Content />
-          </div>
-
-          {/* Post Footer & Author Bio */}
-          <div class="mt-20 pt-12 border-t border-border-subtle">
-            <div class="bg-gray-medium/10 border border-border-subtle rounded-3xl p-8 mb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div>
-                <p class="font-display text-white text-base font-medium mb-1">
-                  Written by Sujal Jariwala
-                </p>
-                <p class="text-gray-light text-sm italic">
-                  Software engineer building clean interfaces, reliable backends, and products like Resumetop.
-                </p>
-              </div>
-              <div class="flex items-center gap-3 shrink-0">
-                <a
-                  href="/#contact"
-                  class="bg-white text-bg-inner font-medium text-xs px-5 py-2 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300"
+          <div class="flex flex-col gap-1 p-[18px] sm:p-6">
+            {otherPosts.map((other) => (
+              <a
+                href={`/blog/${other.id}`}
+                class="block rounded-xl px-3.5 py-3 no-underline transition-colors hover:bg-band"
+              >
+                <span
+                  title={other.data.title}
+                  class="block truncate  text-[clamp(21px,2.6vw,24px)] leading-[1.2] font-normal tracking-[-0.015em] italic"
                 >
-                  Get in touch
-                </a>
-                <a
-                  href="/blog"
-                  class="border border-border-subtle text-white text-xs px-4 py-2 rounded-full hover:border-white transition-colors"
-                >
-                  All articles
-                </a>
-              </div>
-            </div>
-
-            {/* Read More Section */}
-            {otherPosts.length > 0 && (
-              <div>
-                <div class="flex items-center justify-between mb-8">
-                  <h3 class="font-display text-xl md:text-2xl text-white">
-                    More from the blog
-                  </h3>
-                  <a
-                    href="/blog"
-                    class="text-xs font-display text-gray-light hover:text-white flex items-center gap-1 transition-colors"
-                  >
-                    <span>View all</span>
-                    <ArrowRight size={12} />
-                  </a>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {otherPosts.map((other) => (
-                    <a
-                      href={`/blog/${other.id}`}
-                      class="border border-border-subtle rounded-3xl p-6 hover:border-white transition-all duration-300 group flex flex-col justify-between bg-bg-inner/40 cursor-pointer block text-inherit no-underline"
-                    >
-                      <div>
-                        <div class="flex items-center gap-2 mb-3 text-[11px] font-display text-gray-medium">
-                          <span class="text-white">{other.data.category}</span>
-                          <span>•</span>
-                          <span>{other.data.readTime}</span>
-                        </div>
-                        <h4 class="font-display text-white text-lg mb-2 leading-snug group-hover:text-blue-400 transition-colors">
-                          {other.data.title}
-                        </h4>
-                        <p class="text-gray-light text-xs italic line-clamp-2">
-                          {other.data.description}
-                        </p>
-                      </div>
-
-                      <div class="mt-6 pt-4 border-t border-border-subtle/40 flex items-center justify-between text-xs font-display text-white">
-                        <span>Read article</span>
-                        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
+                  {other.data.title}
+                </span>
+                <span class="mt-1.5 flex items-center gap-2.5 text-[13.5px] text-mute">
+                  <span class="inline-block rounded-[10px] border border-line-strong px-2.5 py-0.5 leading-normal">
+                    {other.data.category}
+                  </span>
+                  <time datetime={other.data.pubDate.toISOString()}>
+                    {fmt(other.data.pubDate, "short")}
+                  </time>
+                </span>
+              </a>
+            ))}
           </div>
-        </article>
+        </section>
+      )}
 
-        <Footer />
-      </div>
-    </div>
-  </main>
+      <Footer />
+    </main>
+  </div>
 </Layout>
 
 <style is:global>
-  /* Markdown Content Styling for Blog Posts */
+  /* Markdown content styling for blog posts, driven by the theme tokens */
   .post-markdown-content {
-    font-family: var(--font-body);
-    color: var(--color-gray-light);
-    font-size: 1.1rem;
-    line-height: 1.85;
+    color: var(--ink);
+    font-size: 1.0625rem;
+    line-height: 1.8;
   }
 
   .post-markdown-content > * + * {
-    margin-top: 1.75rem;
+    margin-top: 1.5rem;
   }
 
   .post-markdown-content h1,
   .post-markdown-content h2,
   .post-markdown-content h3,
   .post-markdown-content h4 {
-    font-family: var(--font-display);
-    color: var(--color-white);
-    line-height: 1.3;
-    letter-spacing: -0.01em;
+    font-family:
+      "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   .post-markdown-content h2 {
     font-size: 1.85rem;
-    font-weight: 600;
-    margin-top: 3.5rem;
-    margin-bottom: 1.25rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--color-border-subtle);
+    margin-top: 3rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
   }
 
   .post-markdown-content h3 {
-    font-size: 1.35rem;
-    font-weight: 600;
+    font-size: 1.4rem;
     margin-top: 2.25rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .post-markdown-content p {
-    color: #c0c0c0;
-    line-height: 1.85;
-    margin-bottom: 1.5rem;
   }
 
   .post-markdown-content strong {
-    color: var(--color-white);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .post-markdown-content a {
-    color: #60a5fa;
     text-decoration: underline;
+    text-decoration-color: var(--line2);
     text-underline-offset: 4px;
-    text-decoration-color: rgba(96, 165, 250, 0.4);
-    transition: all 0.2s ease;
+    transition: text-decoration-color 0.2s;
   }
 
   .post-markdown-content a:hover {
-    color: #93c5fd;
-    text-decoration-color: #93c5fd;
+    text-decoration-color: currentColor;
   }
 
   .post-markdown-content ul {
     list-style-type: disc;
     padding-left: 1.5rem;
-    margin-bottom: 1.75rem;
-    color: #c0c0c0;
   }
 
   .post-markdown-content ol {
     list-style-type: decimal;
     padding-left: 1.5rem;
-    margin-bottom: 1.75rem;
-    color: #c0c0c0;
   }
 
-  .post-markdown-content li {
-    margin-bottom: 0.5rem;
-    line-height: 1.75;
+  .post-markdown-content li + li {
+    margin-top: 0.5rem;
   }
 
   .post-markdown-content li::marker {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--mute);
   }
 
   .post-markdown-content blockquote {
-    border-left: 3px solid rgba(255, 255, 255, 0.35);
-    padding: 1rem 1.5rem;
-    margin: 2rem 0;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 0 1rem 1rem 0;
+    margin-left: 0;
+    padding: 0.75rem 1.25rem;
+    border-left: 3px solid var(--acc);
+    border-radius: 0 12px 12px 0;
+    background: var(--band);
     font-style: italic;
-    color: #e2e8f0;
   }
 
   .post-markdown-content code:not(pre code) {
-    font-family: var(--font-display);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.875em;
-    padding: 0.2em 0.45em;
-    border-radius: 0.375rem;
-    background: rgba(255, 255, 255, 0.08);
-    color: #f1f5f9;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.15em 0.4em;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--band);
   }
 
   .post-markdown-content pre {
-    margin: 2rem 0;
     padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
-    background-color: #0b0b0b !important;
-    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background-color: #0f181c !important;
     overflow-x: auto;
-    font-family: var(--font-display);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.875rem;
     line-height: 1.7;
   }
 
   .post-markdown-content pre code {
-    background: transparent;
     padding: 0;
     border: none;
+    background: transparent;
     font-size: inherit;
     color: inherit;
   }
 
   .post-markdown-content hr {
     border: none;
-    border-top: 1px solid var(--color-border-subtle);
-    margin: 3.5rem 0;
+    border-top: 1px solid var(--line);
+    margin: 3rem 0;
   }
 </style>
