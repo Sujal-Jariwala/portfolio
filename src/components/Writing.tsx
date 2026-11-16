@@ -1,9 +1,10 @@
+import { ArrowRight } from "lucide-react";
 import { Scroll } from "./Stickers";
 
 type Post = { title: string; url?: string };
 
 const titleClass =
-    "block truncate  text-[clamp(21px,2.6vw,24px)] leading-[1.2] font-normal tracking-[-0.015em] italic";
+    "block truncate font-serif text-[clamp(21px,2.6vw,24px)] leading-[1.2] font-normal tracking-[-0.015em] italic";
 
 export const Writings = ({ posts }: { posts: Post[] }) => {
     return (
@@ -11,7 +12,7 @@ export const Writings = ({ posts }: { posts: Post[] }) => {
             <div className="hatch" aria-hidden="true" />
 
             <div className="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
-                <h2 className="m-0  text-[32px] leading-none font-normal tracking-[-0.025em] italic">
+                <h2 className="m-0 font-serif text-[32px] leading-none font-normal tracking-[-0.025em] italic">
                     Writings
                 </h2>
                 <Scroll className="-my-2.5" style={{ "--w": "62px", "--r": "-5deg" }} />
@@ -36,6 +37,16 @@ export const Writings = ({ posts }: { posts: Post[] }) => {
                     </li>
                 ))}
             </ul>
+
+            <div className="flex px-[18px] pb-[18px] sm:px-6 sm:pb-6">
+                <a
+                    href="/blog"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-line-strong px-4 py-1.5 text-[14px] no-underline transition-colors hover:bg-band"
+                >
+                    <span>See all writings</span>
+                    <ArrowRight size={14} aria-hidden="true" />
+                </a>
+            </div>
         </section>
     );
 };

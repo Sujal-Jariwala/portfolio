@@ -20,7 +20,9 @@
   --color-acc: var(--acc);
   --color-onpage: var(--onpage);
 
-  --font-sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-hand: "Caveat", "Bradley Hand", cursive;
 }
 
 /* Raw theme values. Default = paper. Set <html data-theme="paper|dark">. */
@@ -97,8 +99,8 @@
     z-index: -1;
     pointer-events: none;
     background: radial-gradient(var(--dots) 1px, transparent 1.5px) 0 0 / 16px 16px;
-    -webkit-mask-image: linear-gradient(#000 50%, transparent);
-    mask-image: linear-gradient(#000 50%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 calc(50% - 384px), #000 calc(50% + 384px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 calc(50% - 384px), #000 calc(50% + 384px), transparent);
   }
 
   a {
@@ -390,22 +392,6 @@
   .summary-box[open]>summary::after {
     content: "\2013";
   }
-
-  .summary-box {
-    interpolate-size: allow-keywords;
-  }
-
-  .summary-box::details-content {
-    block-size: 0;
-    overflow-y: clip;
-    transition:
-      block-size 0.5s cubic-bezier(0.4, 0.1, 0.2, 1),
-      content-visibility 0.5s allow-discrete;
-  }
-
-  .summary-box[open]::details-content {
-    block-size: auto;
-  }
 }
 
 @keyframes pop {
@@ -435,10 +421,6 @@
   .sticker-pop,
   .pulse-dot::after {
     animation: none;
-  }
-
-  .summary-box::details-content {
-    transition: none;
   }
 
   .receipt-paper,
