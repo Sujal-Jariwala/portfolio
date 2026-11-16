@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 // Hash links work from any page (e.g. /blog) because they start with "/".
 const LINKS = [
   { id: "about", label: "about" },
+  { id: "stack", label: "stack" },
   { id: "projects", label: "projects" },
   { id: "writings", label: "writings" },
-  { id: "stack", label: "stack" },
   { id: "reading", label: "reading" },
   { id: "contact", label: "contact" },
 ] as const;
