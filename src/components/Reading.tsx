@@ -170,6 +170,58 @@ const BOOKS: Book[] = [
             "The second part introduces logotherapy, his idea that the deepest human drive is to find meaning. He sees three sources: meaningful work, love for another person, and the stance you take toward suffering you cannot avoid. Even when circumstances are taken away, he argues, how you respond is still yours to choose.",
         ],
     },
+    {
+        id: "wn",
+        title: "White Nights",
+        by: "Fyodor Dostoevsky",
+        h: 284,
+        sw: 44,
+        cw: 190,
+        bg: "#1F2A44",
+        fg: "#EFE7D6",
+        spine: (
+            <>
+                <span className="size-[11px] rounded-full bg-[#F2E3B3]" />
+                <span className="vertical-text min-h-0 flex-1 text-center text-[18px] leading-[1.1] font-semibold">
+                    White Nights
+                </span>
+                <span className="vertical-text text-[11px] leading-none">Dostoevsky</span>
+            </>
+        ),
+        cover: (
+            <>
+                <span className="text-[30px] leading-[1.02] font-semibold tracking-[-0.03em]">
+                    White Nights
+                </span>
+                <span className="mt-2 text-[11.5px] leading-[1.3]">From the Memoirs of a Dreamer</span>
+                <span className="grid min-h-0 flex-1 place-items-center py-1.5">
+                    <svg
+                        className="h-auto max-h-full w-full"
+                        viewBox="0 0 180 110"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                    >
+                        <circle cx="132" cy="28" r="15" fill="#F2E3B3" stroke="none" />
+                        <path d="M6 74Q90 30 174 74" />
+                        <path d="M6 74H174" />
+                        <path d="M30 62V74M54 53V74M78 48V74M102 48V74M126 53V74M150 62V74" />
+                        <path d="M10 88Q22 84 34 88T58 88T82 88T106 88T130 88T154 88T170 88" />
+                        <path d="M26 98Q38 94 50 98T74 98T98 98T122 98T146 98" />
+                    </svg>
+                </span>
+                <span className="text-[13px] leading-[1.2] font-semibold">Fyodor Dostoevsky</span>
+                <span className="mt-0.5 text-[10px] opacity-80">St Petersburg, 1848</span>
+            </>
+        ),
+        summary: [
+            "A short novel set over four white nights in St Petersburg. A lonely young man who lives mostly in his daydreams meets Nastenka, a girl waiting by the canal for the man she loves, who promised to return to her after a year. Over the nights they talk, confide in each other, and he begins to fall for her.",
+            "It is a quiet book about loneliness, and about dreaming your life instead of living it. Dostoevsky is gentle with his narrator, and the ending is bittersweet: even a few real hours of connection can be worth more than years of imagined ones.",
+        ],
+    },
 ];
 
 export default function Reading() {
@@ -188,7 +240,7 @@ export default function Reading() {
             </div>
 
             <div className="p-[18px] sm:p-6">
-                <p className="m-0 mb-4 max-w-[60ch] text-mute">Books I keep coming back to.</p>
+                <p className="m-0 mb-4 max-w-[60ch] text-mute">Some books from my reading catalogue.</p>
 
                 <div className="shelf-board">
                     <div

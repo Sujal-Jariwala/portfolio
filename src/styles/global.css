@@ -392,6 +392,26 @@
   .summary-box[open]>summary::after {
     content: "\2013";
   }
+
+  /* Smooth open/close. Needs ::details-content support; elsewhere it just snaps. */
+  .summary-box {
+    interpolate-size: allow-keywords;
+  }
+
+  .summary-box::details-content {
+    block-size: 0;
+    opacity: 0;
+    overflow-y: clip;
+    transition:
+      block-size 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 0.4s ease,
+      content-visibility 0.55s allow-discrete;
+  }
+
+  .summary-box[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
 }
 
 @keyframes pop {
@@ -426,6 +446,10 @@
   .receipt-paper,
   .receipt[data-on="true"] .receipt-paper {
     clip-path: none;
+    transition: none;
+  }
+
+  .summary-box::details-content {
     transition: none;
   }
 }
