@@ -46,10 +46,10 @@ const writings = (await getCollection("blog", ({ data }) => !data.draft))
       <Navbar client:load />
       <Hero client:load />
       <About />
+      <Stack client:visible />
       <Projects />
       <!-- <Articles /> -->
       <Writings posts={writings} />
-      <Stack client:visible />
       <Reading client:visible />
       <Contact />
       <Footer />

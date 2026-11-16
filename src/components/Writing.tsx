@@ -4,7 +4,7 @@ import { Scroll } from "./Stickers";
 type Post = { title: string; url?: string };
 
 const titleClass =
-    "block truncate font-serif text-[clamp(21px,2.6vw,24px)] leading-[1.2] font-normal tracking-[-0.015em] italic";
+    "block truncate  text-[clamp(21px,2.6vw,24px)] leading-[1.2] font-normal tracking-[-0.015em] italic";
 
 export const Writings = ({ posts }: { posts: Post[] }) => {
     return (
@@ -12,7 +12,7 @@ export const Writings = ({ posts }: { posts: Post[] }) => {
             <div className="hatch" aria-hidden="true" />
 
             <div className="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
-                <h2 className="m-0 font-serif text-[32px] leading-none font-normal tracking-[-0.025em] italic">
+                <h2 className="m-0  text-[32px] leading-none font-normal tracking-[-0.025em] italic">
                     Writings
                 </h2>
                 <Scroll className="-my-2.5" style={{ "--w": "62px", "--r": "-5deg" }} />

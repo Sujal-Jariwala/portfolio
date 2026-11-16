@@ -6,32 +6,34 @@ type Group = { title: string; items: Item[] };
 
 const GROUPS: Group[] = [
     {
-        title: "Languages",
+        title: "Frontend",
         items: [
             { name: "TypeScript", note: "Type-safe front end" },
-            { name: "Go", note: "API server" },
-            { name: "Rust", note: "Storage engine" },
-        ],
-    },
-    {
-        title: "Front end",
-        items: [
             { name: "React", note: "Editor" },
             { name: "Astro", note: "Marketing site" },
             { name: "Tailwind CSS", note: "Styling" },
         ],
     },
     {
-        title: "Back end",
+        title: "Backend",
         items: [
+            { name: "Go", note: "API server" },
             { name: "LaTeX", note: "PDF rendering" },
             { name: "ClamAV", note: "Upload scanning" },
             { name: "Cloudflare R2", note: "File storage" },
+            { name: "Caddy", note: "TLS and proxy" },
         ],
     },
     {
+        title: "Systems",
+        items: [{ name: "Rust", note: "Storage engine" }],
+    },
+    {
         title: "Hosting",
-        items: [{ name: "Caddy", note: "TLS and proxy" }],
+        items: [
+            { name: "Cloudflare", note: "Web hosting" },
+            { name: "Cloudflare Registrar", note: "Domain" },
+        ],
     },
 ];
 
@@ -68,16 +70,16 @@ export default function Stack() {
         <section id="stack" data-label="Stack" className="relative scroll-mt-16">
             <div className="hatch" aria-hidden="true" />
 
-            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
-                <h2 className="m-0  text-[32px] leading-none font-normal tracking-[-0.025em] italic">
+            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-4.5 py-2 sm:px-6">
+                <h2 className="m-0  text-[32px] leading-none font-normal tracking-tight italic">
                     Stack
                 </h2>
                 <Gear className="-my-2.5" style={{ "--w": "62px", "--r": "9deg" }} />
             </div>
 
-            <div className="flex justify-center p-[18px] sm:p-6">
-                <div ref={receiptRef} data-on={on} className="receipt mt-1.5 w-full max-w-[380px]">
-                    <div className="receipt-paper px-[26px] pt-[30px] pb-[34px]">
+            <div className="flex justify-center p-4.5 sm:p-6">
+                <div ref={receiptRef} data-on={on} className="receipt mt-1.5 w-full max-w-95">
+                    <div className="receipt-paper px-6.5 pt-7.5 pb-8.5">
                         <h3 className="m-0 text-center  text-[36px] leading-none font-normal tracking-[-0.02em] italic">
                             Built with
                         </h3>

@@ -6,7 +6,7 @@ export const About = () => {
       <div className="hatch" aria-hidden="true" />
 
       <div className="flex min-h-16 items-center justify-between gap-3 border-b border-line bg-band px-[18px] py-2 sm:px-6">
-        <h2 className="m-0 text-[32px] leading-none font-semibold tracking-[-0.025em]">
+        <h2 className="m-0 text-[32px] italic leading-none font-normal tracking-[-0.025em]">
           About
         </h2>
         <BookIcon className="-my-2.5" style={{ "--w": "62px", "--r": "6deg" }} />
