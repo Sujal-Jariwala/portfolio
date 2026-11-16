@@ -20,9 +20,7 @@
   --color-acc: var(--acc);
   --color-onpage: var(--onpage);
 
-  --font-sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --font-hand: "Caveat", "Bradley Hand", cursive;
+  --font-sans: "Geist", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Raw theme values. Default = paper. Set <html data-theme="paper|dark">. */
@@ -99,8 +97,8 @@
     z-index: -1;
     pointer-events: none;
     background: radial-gradient(var(--dots) 1px, transparent 1.5px) 0 0 / 16px 16px;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 calc(50% - 384px), #000 calc(50% + 384px), transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 calc(50% - 384px), #000 calc(50% + 384px), transparent);
+    -webkit-mask-image: linear-gradient(#000 50%, transparent);
+    mask-image: linear-gradient(#000 50%, transparent);
   }
 
   a {
@@ -393,7 +391,6 @@
     content: "\2013";
   }
 
-  /* Smooth open/close. Needs ::details-content support; elsewhere it just snaps. */
   .summary-box {
     interpolate-size: allow-keywords;
   }
@@ -443,13 +440,13 @@
     animation: none;
   }
 
-  .receipt-paper,
-  .receipt[data-on="true"] .receipt-paper {
-    clip-path: none;
+  .summary-box::details-content {
     transition: none;
   }
 
-  .summary-box::details-content {
+  .receipt-paper,
+  .receipt[data-on="true"] .receipt-paper {
+    clip-path: none;
     transition: none;
   }
 }
