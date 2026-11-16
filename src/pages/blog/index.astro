@@ -39,7 +39,7 @@ const categories = [
             <select
               id="category-filter"
               aria-label="Filter by topic"
-              class="cursor-pointer appearance-none rounded-full border border-line-strong bg-transparent py-1.5 pr-9 pl-4 text-[14px] text-ink transition-colors hover:bg-band"
+              class="cursor-pointer appearance-none rounded-full border border-line-strong bg-transparent py-1.5 pr-9 pl-4 text-[14px] text-ink transition-colors hover:bg-band [&>option]:bg-panel [&>option]:text-ink"
             >
               {categories.map((cat) => (
                 <option value={cat}>
