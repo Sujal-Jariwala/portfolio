@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { ArrowUpRight, Copy, Mail } from "lucide-react";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
 import { Postcard } from "./Stickers";
+import { FaInstagram } from "react-icons/fa";
 
 const EMAIL = "thisisjariwalasujal@gmail.com";
 
@@ -19,6 +20,12 @@ const SOCIALS = [
     href: "https://www.linkedin.com/in/sujal-jariwala-b9b814267/",
   },
   { name: "Email", Icon: Mail, handle: EMAIL, href: `mailto:${EMAIL}`, copy: true },
+  {
+    name: "Instagram",
+    Icon: FaInstagram,
+    handle: "https://www.instagram.com/thebitpenguin/?hl=en",
+    tilt: "-rotate-[1deg]"
+  }
 ];
 
 export const Contact = () => {
