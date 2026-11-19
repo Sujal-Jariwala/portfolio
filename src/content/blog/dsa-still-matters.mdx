@@ -1,0 +1,100 @@
+---
+title: "Why DSA Still Matters"
+description: "Why data structures and algorithms are still worth learning: not just for interviews, but to understand the problems they solve and when to use which."
+pubDate: 2026-11-19
+category: "Personal notes"
+readTime: 6 min read
+draft: false
+heroImage: "../../assets/blog_assets/why_dsa_matters.svg"
+---
+
+DSA is still worth learning because the problems it solves did not disappear; they just got bigger. Before arguing whether it is still relevant, it helps to ask a more basic question: why do data structures and algorithms exist at all?
+
+## Why do we need DSA in the first place?
+
+Every program does two things: it stores data, and it does something with that data. Data structures are how we organise what we store. Algorithms are the steps we take to work with it.
+
+Neither was invented as trivia. Each one exists because someone hit a real wall: searching was too slow, memory was too tight, or thousands of requests needed the same data at the same time. A hash map, a heap, a B-tree and a graph traversal are all answers to a specific problem.
+
+That is the lens I want to use in this post. DSA is not a list of puzzles to memorise. It is a record of problems people ran into and the best answers they found.
+
+## Scale changes everything
+
+At small scale almost any approach works. At large scale, the data structure you pick decides whether a system stays fast or falls over.
+
+Take one lookup in a collection of a million items:
+
+| Approach | Rough work per lookup | Typical structure |
+| --- | --- | --- |
+| Linear scan | up to 1,000,000 comparisons | Plain list |
+| Binary search | about 20 comparisons | Sorted array, balanced tree |
+| Hash lookup | about 1 on average | Hash map |
+
+Now multiply that by thousands of requests every second. That gap is the difference between a response in a millisecond and a request that times out.
+
+This is what latency and throughput mean in practice. Latency is how long one request takes. Throughput is how many requests you can handle in a given time. A better algorithm improves both at once, because less work per request means more requests per second on the same machine.
+
+Hardware does not rescue a bad algorithm either. An O(n²) approach over a million items is about a trillion operations. A faster CPU makes it slightly less slow, not fast.
+
+## Where DSA hides in real systems
+
+Most of the infrastructure we rely on every day is a stack of classic data structures with a network in front of it.
+
+| Problem | Structure or algorithm | Where you see it |
+| --- | --- | --- |
+| Fast lookup by key | Hash map | In-memory caches such as Redis and Memcached |
+| Range queries on disk | B-tree | Indexes in relational databases |
+| Very heavy write loads | LSM tree | RocksDB, Cassandra |
+| "Is this key definitely absent?" without a disk read | Bloom filter | Storage engines skipping useless reads |
+| Ranked data like leaderboards | Skip list | Redis sorted sets |
+| Autocomplete and prefix search | Trie | Search suggestions |
+| Top-K and task scheduling | Heap / priority queue | Job queues, schedulers |
+| Spreading keys across many servers | Consistent hashing | Distributed caches and databases |
+| Routes, dependencies, connections | Graph algorithms | Maps, package managers, build systems |
+| Limiting request rates | Token bucket, sliding window | API gateways |
+
+None of these are exotic. Each one trades something (memory, write speed, simplicity) for something else (read speed, less disk I/O, even load). The engineers who built them were doing exactly the kind of reasoning DSA teaches.
+
+## Don't learn DSA only for interviews
+
+Interviews are how most of us first meet DSA, and that is fine. But if interviews are the only reason, it shows: you memorise patterns, forget them after the offer, and never connect them to anything you build.
+
+The better reason is to understand why these things exist. Learn a hash map by asking what problem it was built to solve, and the answer sticks: scanning for a key is too slow. Learn a heap the same way: you need the smallest item again and again without re-sorting everything.
+
+Once you know the problem behind a structure, you start recognising that problem in your own code. You notice when a feature is slow because of a nested loop, when a list should really be a set, or when you keep re-sorting data that a heap would keep ordered for free. That habit is what makes DSA useful long after the interview is over.
+
+## Knowing when to use which
+
+The real skill is not knowing every structure. It is matching the operation you do most to the structure that makes it cheap, and knowing what you give up in return.
+
+| If you need | Reach for | The trade-off |
+| --- | --- | --- |
+| Fast lookup by exact key | Hash map or set | No ordering, extra memory |
+| Sorted data, ranges, nearest value | Balanced tree, or sorted array with binary search | Slower inserts than a hash map |
+| The smallest or largest item, repeatedly | Heap | No fast arbitrary search |
+| First-in, first-out processing | Queue | Access only at the ends |
+| Undo, nesting, depth-first traversal | Stack | Access only at the top |
+| Matching by prefix | Trie | Higher memory use |
+| Relationships between things | Graph with BFS, DFS or Dijkstra | More complex to model and store |
+| The same subproblem solved repeatedly | Dynamic programming | Memory spent to save time |
+
+Before picking, I find three questions enough. What operation happens most: reads, writes, ranges or min/max? How large can the data realistically get? What am I willing to trade: memory, simplicity or write speed?
+
+It also teaches the opposite lesson. For a list of fifty items, a plain array is fine, and reaching for something clever is its own mistake.
+
+## How I'd start
+
+If you are beginning now, this is the loop I would run for every data structure and algorithm:
+
+1. **Find the problem.** Start with a real task that hurts, like finding one user among millions or keeping the top 10 scores. Write the naive solution and see where it breaks.
+2. **See why a structure or algorithm exists for it.** Ask what the naive approach was wasting. That wasted work is the reason someone invented the fix.
+3. **Learn how it solves it.** Now study the structure itself: what it stores, what it gives up, and why that makes the painful operation cheap.
+4. **Use it on a similar problem.** Reach for it on a different problem with the same shape. If it fits, you understood it. If it doesn't, you have learned its limits.
+
+Run this loop on each structure and you will learn far more than by memorising it.
+
+## Final thoughts
+
+DSA is relevant because scale never stopped being a problem. Every system that serves millions of users is still deciding how to store data and how to search it cheaply.
+
+Interviews will keep testing it, but that is the smallest reason to learn it. Learn it to understand why these ideas exist, what each one solves, and when to reach for which. After that, the interview questions are just a side effect.
