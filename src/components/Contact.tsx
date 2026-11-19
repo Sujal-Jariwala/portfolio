@@ -24,7 +24,7 @@ const SOCIALS = [
     name: "Instagram",
     Icon: FaInstagram,
     handle: "https://www.instagram.com/thebitpenguin/?hl=en",
-    tilt: "-rotate-[1deg]"
+    href:"https://www.instagram.com/thebitpenguin/?hl=en",
   }
 ];
 
